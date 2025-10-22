@@ -1,72 +1,77 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ncontrem <ncontrem@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/21 19:50:38 by ncontrem          #+#    #+#             */
-/*   Updated: 2025/10/22 20:17:46 by ncontrem         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 
-char	*get_last_line(char *str)
+char	*get_line(char *str)
 {
 	char	*line;
-	int		len;
 	int		index;
+	int		j;
 
 	index = 0;
-	len = ft_strlen(str);
-	while (str[len] != '\n' && len != 0)
-		len--;
-	len++;
-	line = malloc((ft_strlen(str) - len) + 1);
+	j = 0;
+	if (!str || !*str)
+		return (NULL);
+	while (str[index] && str[index] != '\n')
+		index++;
+	line = malloc(index + (str[index] == '\n') + 1);
 	if (!line)
 		return (NULL);
-	while (str[len++])
+	while (str[j] && str[j] != '\n')
 	{
-		line[index] = str[len];
-		index++;
+		line[j] = str[j];
+		j++;
 	}
-	line[index] = '\0';
+	if (str[j] == '\n')
+		line[j++] = '\n';
+	line[j] = '\0';
 	return (line);
+}
+
+char	*str_clean(char *str)
+{
+	// Prend str et va voir jusqu'au \n et donne le caractere suivant
+	// Si y'a pas bah fait pas le mec bizarre et renvoie juste NULL prcq de tte facon y'aura pas de deuxieme ligne
+	// Regard si y'a pas d'autre verif ou condition a mettre
+	// grosse force pour la tempete demain si j'oublie mon manteau desoler d'avance
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*str;
-	char		*current_line;
+	char		*str_line;
 	char		buff[BUFFER_SIZE + 1];
-	int			result;
+	int			bytes;
 
-	while (!ft_strchr(buff, '\n'))
+	bytes = 1;
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	while (!ft_strchr(str, '\n') && bytes > 0)
 	{
-		result = read(fd, buff, BUFFER_SIZE);
-		if (result == -1)
+		bytes = read(fd, buff, BUFFER_SIZE);
+		if (bytes < 0)
 			return (NULL);
-		buff[BUFFER_SIZE] = '\0';
+		buff[bytes] = '\0';
 		str = ft_strjoin(str, buff);
 		if (!str)
 			return (NULL);
 	}
-	current_line = get_last_line(str);
-	return (current_line);
+	str_line = get_line(str);
+	str = str_clean(str);
+	return (str_line);
 }
 
-int	main(void)
+/* int main(void)
 {
-	char	*str;
-	int		line;
+    char *str;
+    int line = 0;
 
-	line = 0;
-	while (line < 4)
-	{
-		str = get_next_line(0);
-		printf("%s", str);
-		line++;
-	}
-	return (0);
-}
+    while (line < 4)
+    {
+        str = get_next_line(0);
+        if (!str)
+            return (1);
+        printf("%s", str);
+        free(str);
+        line++;
+    }
+    return (0);
+} */
