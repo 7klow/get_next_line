@@ -28,10 +28,27 @@ char	*get_line(char *str)
 
 char	*str_clean(char *str)
 {
-	// Prend str et va voir jusqu'au \n et donne le caractere suivant
-	// Si y'a pas bah fait pas le mec bizarre et renvoie juste NULL prcq de tte facon y'aura pas de deuxieme ligne
-	// Regard si y'a pas d'autre verif ou condition a mettre
-	// grosse force pour la tempete demain si j'oublie mon manteau desoler d'avance
+	char	*next_str;
+	int		index;
+	int		j;
+
+	index = 0;
+	j = 0;
+	if (!str)
+		return (NULL);
+	while (str[index] != '\n' && str[index])
+		index++;
+	if (str[index] == '\n')
+		index++;
+	if (!str[index])
+		return (free(str), NULL);
+	next_str = malloc(ft_strlen(&str[index]) + 1);
+	if (!next_str)
+		return (free(str), NULL);
+	while (str[index])
+		next_str[j++] = str[index++];
+	next_str[j] = '\0';
+	return (free(str), next_str);
 }
 
 char	*get_next_line(int fd)
