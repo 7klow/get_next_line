@@ -76,7 +76,7 @@ char	*get_next_line(int fd)
 	return (str_line);
 }
 
-int main(void)
+/* int main(void)
 {
     char *str;
     int line = 0;
@@ -91,4 +91,4 @@ int main(void)
         line++;
     }
     return (0);
-}
+} */
