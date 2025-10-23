@@ -61,7 +61,7 @@ char	*get_next_line(int fd)
 	bytes = 1;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	while (!ft_strchr(str, '\n') && bytes > 0)
+	while (str == NULL || (!ft_strchr(str, '\n') && bytes > 0))
 	{
 		bytes = read(fd, buff, BUFFER_SIZE);
 		if (bytes < 0)
@@ -76,12 +76,12 @@ char	*get_next_line(int fd)
 	return (str_line);
 }
 
-/* int main(void)
+int main(void)
 {
     char *str;
     int line = 0;
 
-    while (line < 4)
+    while (line < 5)
     {
         str = get_next_line(0);
         if (!str)
@@ -91,4 +91,4 @@ char	*get_next_line(int fd)
         line++;
     }
     return (0);
-} */
+}
