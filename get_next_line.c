@@ -71,11 +71,11 @@ char	*get_next_line(int fd)
 	ssize_t		bytes;
 
 	bytes = 1;
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
 	buff = malloc(BUFFER_SIZE + 1);
 	if (!buff)
 		return (NULL);
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (free(buff), NULL);
 	while (str == NULL || (!ft_strchr(str, '\n') && bytes > 0))
 	{
 		bytes = read(fd, buff, BUFFER_SIZE);
