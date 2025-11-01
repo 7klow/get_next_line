@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ncontrem <ncontrem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/24 08:56:48 by ncontrem          #+#    #+#             */
-/*   Updated: 2025/10/30 12:28:50 by ncontrem         ###   ########.fr       */
+/*   Created: 2025/11/01 11:03:04 by ncontrem          #+#    #+#             */
+/*   Updated: 2025/11/01 11:06:01 by ncontrem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*get_line(char *str)
 {
@@ -65,7 +65,7 @@ static char	*str_clean(char *str)
 
 char	*get_next_line(int fd)
 {
-	static char	*str;
+	static char	*str[MAX_FD];
 	char		*str_line;
 	char		*buff;
 	ssize_t		bytes;
@@ -76,34 +76,17 @@ char	*get_next_line(int fd)
 	buff = malloc(BUFFER_SIZE + 1);
 	if (!buff)
 		return (NULL);
-	while (str == NULL || (!ft_strchr(str, '\n') && bytes > 0))
+	while (str[fd] == NULL || (!ft_strchr(str[fd], '\n') && bytes > 0))
 	{
 		bytes = read(fd, buff, BUFFER_SIZE);
 		if (bytes < 0)
-			return (free(buff), free(str), str = NULL, NULL);
+			return (free(buff), free(str[fd]), str[fd] = NULL, NULL);
 		buff[bytes] = '\0';
-		str = ft_strjoin(str, buff);
-		if (!str)
-			return (free(buff), free(str), str = NULL, NULL);
+		str[fd] = ft_strjoin(str[fd], buff);
+		if (!str[fd])
+			return (free(buff), free(str[fd]), str[fd] = NULL, NULL);
 	}
-	str_line = get_line(str);
-	str = str_clean(str);
+	str_line = get_line(str[fd]);
+	str[fd] = str_clean(str[fd]);
 	return (free(buff), str_line);
 }
-
-/* int main(void)
-{
-    char *str;
-    int line = 0;
-
-    while (line < 11)
-    {
-        str = get_next_line(0);
-        if (!str)
-            return (1);
-        printf("%s", str);
-        free(str);
-        line++;
-    }
-    return (0);
-} */
